@@ -1,0 +1,36 @@
+# docker-compose.yml
+
+version: '3'
+services:
+  db:
+    image: postgres:13
+    restart: always
+    volumes:
+      - $HOME/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=123qwe
+  django:
+    build: ./app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    volumes:
+      - static:/opt/app/static
+    depends_on:
+      - db
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./src/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs:/etc/nginx/conf.d:ro
+      - static:/var/www/site/static
+    depends_on:
+      - django
+    ports:
+      - "80:80"
+volumes:
+  static:
