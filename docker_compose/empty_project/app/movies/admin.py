@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import Genre, Filmwork, GenreFilmwork, Person, PersonFilmwork
+
+from .models import Filmwork, Genre, GenreFilmwork, Person, PersonFilmwork
 
 
 @admin.register(Genre)

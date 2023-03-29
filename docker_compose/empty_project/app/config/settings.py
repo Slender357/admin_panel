@@ -60,3 +60,5 @@ LOCALE_PATHS = ['movies/locale']
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:8080", "http://localhost:8080",]

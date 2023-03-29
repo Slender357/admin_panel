@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'movies.apps.MoviesConfig',
+    'corsheaders'
 ]
 if os.environ.get('DEBUG', False) == 'True':
     INSTALLED_APPS.append('debug_toolbar')

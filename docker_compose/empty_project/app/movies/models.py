@@ -1,7 +1,8 @@
 import uuid
-from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class TimeStampedMixin(models.Model):
@@ -90,7 +91,10 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
         verbose_name = _('verbose_name_film_work')
         verbose_name_plural = _('verbose_name_plural_film_work')
         indexes = [
-            models.Index(fields=['creation_date'], name='film_work_creation_date_idx'),
+            models.Index(
+                fields=['creation_date'],
+                name='film_work_creation_date_idx'
+            ),
         ]
 
     def __str__(self):
@@ -115,16 +119,20 @@ class GenreFilmwork(UUIDMixin):
         verbose_name = _('verbose_name_genre_film_work')
         verbose_name_plural = _('verbose_name_plural_genre_film_work')
         constraints = [
-            models.UniqueConstraint(fields=['film_work_id', 'genre_id'], name='film_work_genre_idx')
+            models.UniqueConstraint(
+                fields=['film_work_id', 'genre_id'],
+                name='film_work_genre_idx'
+            )
         ]
 
 
-class PersonFilmwork(UUIDMixin):
-    class RoleType(models.TextChoices):
-        ACTOR = 'actor', _('actor')
-        DIRECTOR = 'director', _('director')
-        WRITER = 'writer', _('writer')
+class RoleType(models.TextChoices):
+    ACTOR = 'actor', _('actor')
+    DIRECTOR = 'director', _('director')
+    WRITER = 'writer', _('writer')
 
+
+class PersonFilmwork(UUIDMixin):
     film_work = models.ForeignKey(
         Filmwork,
         verbose_name=_('verbose_name_film_work'),
@@ -147,5 +155,8 @@ class PersonFilmwork(UUIDMixin):
         verbose_name = _('verbose_name_person_film_work')
         verbose_name_plural = _('verbose_name_plural_person_film_work')
         constraints = [
-            models.UniqueConstraint(fields=['film_work_id', 'person_id', 'role'], name='film_work_person_idx')
+            models.UniqueConstraint(
+                fields=['film_work_id', 'person_id', 'role'],
+                name='film_work_person_idx'
+            )
         ]

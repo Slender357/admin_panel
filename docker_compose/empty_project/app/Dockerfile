@@ -4,6 +4,10 @@ FROM python:3.10
 # Выберите папку, в которой будут размещаться файлы проекта внутри контейнера
 WORKDIR /opt/app
 
+RUN groupadd -r web && useradd -d /opt/app -r -g web web \
+    && chown web:web -R /opt/app
+
+
 # Заведите необходимые переменные окружения
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -13,14 +17,11 @@ ENV UWSGI_HARAKIRI 240
 ENV DJANGO_SETTINGS_MODULE 'config.settings'
 
 # Скопируйте в контейнер файлы, которые редко меняются
-COPY run_uwsgi.sh run_uwsgi.sh
 COPY requirements.txt requirements.txt
 COPY uwsgi/uwsgi.ini uwsgi.ini
 
 # Установите зависимости
-RUN  mkdir -p /var/www/static/ \
-     && mkdir -p /opt/app/static/ \
-     && pip install --upgrade pip \
+RUN pip install --upgrade pip \
      && pip install -r requirements.txt
 
 # Скопируйте всё оставшееся. Для ускорения сборки образа эту команду стоит разместить ближе к концу файла.
@@ -28,8 +29,7 @@ COPY .. .
 
 # Укажите порт, на котором приложение будет доступно внутри Docker-сети
 EXPOSE 8000
-
+USER web
 # Укажите, как запускать ваш сервис
-#RUN ["python", "manage.py", "collectstatic", "--noinput"]
 RUN python manage.py collectstatic
 ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
