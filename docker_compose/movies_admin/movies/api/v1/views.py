@@ -9,13 +9,10 @@ from movies.models import Filmwork, RoleType
 
 class MoviesApiMixin:
     model = Filmwork
-    http_method_names = ['get']
+    http_method_names = ["get"]
 
     def get_queryset(self):
-        query = Filmwork.objects.prefetch_related(
-            'genres',
-            'person'
-        ).values(
+        query = Filmwork.objects.values(
             'id',
             'title',
             'description',
@@ -55,20 +52,18 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         queryset = self.get_queryset()
         paginator, page, queryset, is_paginated = self.paginate_queryset(
-            queryset,
-            self.paginate_by
+            queryset, self.paginate_by
         )
         context = {
             "count": paginator.count,
             "total_pages": paginator.num_pages,
-            "prev": page.previous_page_number()
-            if page.has_previous() else None,
+            "prev": page.previous_page_number() if page.has_previous() else None,
             "next": page.next_page_number() if page.has_next() else None,
-            'results': list(queryset),
+            "results": list(queryset),
         }
         return context
 
 
 class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
     def get_context_data(self, **kwargs):
-        return self.get_queryset().filter(id=self.kwargs['pk']).get()
+        return self.get_queryset().get(id=self.kwargs["pk"])
