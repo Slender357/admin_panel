@@ -25,7 +25,7 @@ RUN pip install --upgrade pip \
      && pip install -r requirements.txt
 
 # Скопируйте всё оставшееся. Для ускорения сборки образа эту команду стоит разместить ближе к концу файла.
-COPY .. .
+COPY ../movies_admin .
 
 # Укажите порт, на котором приложение будет доступно внутри Docker-сети
 EXPOSE 8000
