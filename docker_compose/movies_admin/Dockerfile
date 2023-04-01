@@ -4,8 +4,13 @@ FROM python:3.10
 # Выберите папку, в которой будут размещаться файлы проекта внутри контейнера
 WORKDIR /opt/app
 
-RUN groupadd -r web && useradd -d /opt/app -r -g web web \
+RUN groupadd -r web  \
+    && useradd -d /opt/app -r -g web web \
     && chown web:web -R /opt/app
+
+RUN apt-get update  \
+    && apt-get install -y gettext  \
+    && rm -rf /var/lib/apt/lists/*
 # Заведите необходимые переменные окружения
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -22,9 +27,9 @@ COPY entrypoint.sh entrypoint.sh
 
 # Установите зависимости
 RUN pip install --upgrade pip  \
-    && pip install -r requirements/requirements-dev.txt --no-cache-dir \
-    && mkdir -p /opt/app/static/ \
-    && chown web:web /opt/app/static/
+    && pip install -r requirements/requirements-dev.txt --no-cache-dir
+#    && mkdir -p /opt/app/static/ \
+#    && chown web:web /opt/app/static/
 
 # Скопируйте всё оставшееся. Для ускорения сборки образа эту команду стоит разместить ближе к концу файла.
 COPY . .
@@ -32,6 +37,6 @@ COPY . .
 EXPOSE 8000
 # Укажите, как запускать ваш сервис
 RUN ["chmod","+x","./entrypoint.sh"]
-USER web
+#USER web
 #RUN python manage.py collectstatic
 ENTRYPOINT ["./entrypoint.sh"]
