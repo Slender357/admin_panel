@@ -28,8 +28,6 @@ COPY entrypoint.sh entrypoint.sh
 # Установите зависимости
 RUN pip install --upgrade pip  \
     && pip install -r requirements/requirements-dev.txt --no-cache-dir
-#    && mkdir -p /opt/app/static/ \
-#    && chown web:web /opt/app/static/
 
 # Скопируйте всё оставшееся. Для ускорения сборки образа эту команду стоит разместить ближе к концу файла.
 COPY . .
@@ -37,6 +35,5 @@ COPY . .
 EXPOSE 8000
 # Укажите, как запускать ваш сервис
 RUN ["chmod","+x","./entrypoint.sh"]
-#USER web
-#RUN python manage.py collectstatic
+
 ENTRYPOINT ["./entrypoint.sh"]
